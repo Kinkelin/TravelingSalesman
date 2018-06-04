@@ -3,7 +3,7 @@ package mathematical;
 import java.util.Arrays;
 import java.util.Map;
 
-public class EasiestPathTsp implements TspAlgorithm {
+public class GreedyTsp implements TspAlgorithm {
 
 	@Override
 	public Node[] solve(Node[] nodes) {

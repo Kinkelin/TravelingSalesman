@@ -1,7 +1,11 @@
 package visual;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,17 +18,27 @@ public class Display extends JPanel {
 	private List<Salesman> salesmen = new LinkedList<>();
 	
 	private JLabel fps = new JLabel();
+	private JLabel distanceTravelled = new JLabel();
 	
 	public Display() {
 		add(fps);
+		add(distanceTravelled);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		trails.forEach(t -> t.draw(g));
+		List<Trail> stableTrails = new ArrayList<Trail>(trails);
+		Map<String, Double> distance = new HashMap<>();
+		for (Trail trail : stableTrails) {
+			String s = trail.getName();
+			if (!distance.containsKey(s)) distance.put(s, 0.0);
+			distance.put(s, (double) Math.round(distance.get(s) + trail.getStart().distance(trail.getEnd())));
+		}
+		setDistanceTravelled(distance);
+		stableTrails.forEach(t -> t.draw(g));
 		cities.forEach(c -> c.draw(g));
-		marks.forEach(m -> m.draw(g));
+		new ArrayList<VisitorMark>(marks).forEach(m -> m.draw(g));
 		salesmen.forEach(s -> s.draw(g));
 	}
 
@@ -61,7 +75,11 @@ public class Display extends JPanel {
 	}
 	
 	public void setFps(int fps) {
-		this.fps.setText(Integer.toString(fps));
+		this.fps.setText("FPS = " + Integer.toString(fps));
+	}
+	
+	public void setDistanceTravelled(Map<String, Double> distance) {
+		this.fps.setText("Distance travelled " + distance);
 	}
 
 }

@@ -12,7 +12,7 @@ public class City extends Circle {
 		this.position = position;
 		this.name = name;
 		this.self = self;
-		radius = 12;
+		radius = 3;
 		color = Color.GRAY;
 	}
 	

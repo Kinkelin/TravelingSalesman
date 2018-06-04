@@ -19,7 +19,7 @@ public class Salesman extends Circle {
 		position = route.get(0).getPosition();
 		this.color = color;
 		this.name = name;
-		currentTrail = new Trail(position, color, offset);
+		currentTrail = new Trail(position, color, name, offset);
 		this.display = display;
 		display.getTrails().add(currentTrail);
 		display.getMarks().add(new VisitorMark(position, color, offset));
@@ -42,7 +42,7 @@ public class Salesman extends Circle {
 				currentDistance -= currentToNextCityDistance;
 				routePosition += 1;
 				currentTrail.setEnd(route.get(routePosition).getPosition());
-				currentTrail = new Trail(currentTrail.getEnd(), color, offset);
+				currentTrail = new Trail(currentTrail.getEnd(), color, name, offset);
 				display.getTrails().add(currentTrail);
 				display.getMarks().add(new VisitorMark(currentTrail.getEnd(), color, offset));
 				if (isBusy()) currentToNextCityDistance = currentToNextCityDistance();

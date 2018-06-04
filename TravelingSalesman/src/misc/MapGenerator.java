@@ -12,8 +12,8 @@ import visual.City;
 
 public class MapGenerator {
 
-	private static int MAP_SIZE = 800;
-	private static int PROBLEM_SIZE = 10;
+	private static int MAP_SIZE = 935;
+	private static int PROBLEM_SIZE = 1000;
 
 	private City[] cities;
 	private Node[] nodes;

@@ -4,7 +4,7 @@ import java.util.List;
 public class Simulation implements Runnable {
 	public static long THREAD_SLEEP = 1;
 	public static double DESIRED_FPS = 60;
-	public static double STEP_MOVEMENT = 3;
+	public static double STEP_MOVEMENT = 9;
 
 	private Display display;
 

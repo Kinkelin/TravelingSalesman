@@ -9,11 +9,13 @@ public class Trail {
 	private Point start;
 	private Point end;
 	private int offset;
+	private String name;
 	
-	public Trail(Point position, Color color, int offset) {
+	public Trail(Point position, Color color, String name, int offset) {
 		start = position;
 		end = position;
 		this.color = color;
+		this.name = name;
 		this.offset = offset;
 	}
 	
@@ -36,5 +38,29 @@ public class Trail {
 
 	public void setEnd(Point end) {
 		this.end = end;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 }

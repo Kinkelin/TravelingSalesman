@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import mathematical.BruteForceTsp;
-import mathematical.EasiestPathTsp;
+import mathematical.GreedyTsp;
 import mathematical.MonkeyTsp;
 import mathematical.TspAlgorithm;
 import visual.City;
@@ -26,18 +26,17 @@ public class Main {
 		List<Salesman> salesmen = new LinkedList<>();
 		
 		TspAlgorithm bruteForce = new BruteForceTsp();
-		List<City> bestRoute = generator.getCities(bruteForce.solve(generator.getNodes()));
+		//List<City> bestRoute = generator.getCities(bruteForce.solve(generator.getNodes()));
 		
 		TspAlgorithm monkey = new MonkeyTsp();
 		List<City> randomRoute = generator.getCities(monkey.solve(generator.getNodes()));
 		
-		TspAlgorithm easiestPath = new EasiestPathTsp();
-		List<City> easiestRoute = generator.getCities(easiestPath.solve(generator.getNodes()));
+		TspAlgorithm greedy = new GreedyTsp();
+		List<City> greedyRoute = generator.getCities(greedy.solve(generator.getNodes()));
 		
-		salesmen.add(new Salesman(randomRoute, Color.RED, "Monkey", display, -5));
-		salesmen.add(new Salesman(easiestRoute, Color.YELLOW, "Easiest Path", display, 0));
-		
-		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 5));
+		//salesmen.add(new Salesman(randomRoute, Color.RED, "Monkey", display, -5));
+		salesmen.add(new Salesman(greedyRoute, Color.BLUE, "Greedy", display, 0));
+		//salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 5));
 		
 		display.setSalesmen(salesmen);
 		
