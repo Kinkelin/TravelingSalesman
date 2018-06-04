@@ -1,21 +1,19 @@
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.Map;
 
-public class City {
+public class City extends Circle {
 	
-	private static final int radius = 12;
-	
-	private String name;
-	private Point position;
 	private Node self;
-	
-	public Object draw(Graphics g) {
-		g.setColor(Color.GRAY);
-		g.fillOval(position.x - radius, position.y - radius, 2*radius, 2*radius);
-		return null;
-	}
 
+	public City(Point position, String name, Node self) {
+		this.position = position;
+		this.name = name;
+		this.self = self;
+		radius = 12;
+		color = Color.GRAY;
+	}
+	
+	public Node getSelf() {
+		return self;
+	}
 }

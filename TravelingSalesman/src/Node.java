@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Node {
@@ -18,5 +19,13 @@ public class Node {
 	
 	public Double getWeight(Node node) {
 		return edges.get(node);
+	}
+	
+	public static double routeLength(List<Node> route) {
+		double length = 0;
+		for (int i = 0; i < route.size() - 1; i++) {
+			length += route.get(i).getWeight(route.get(i+1));
+		}
+		return length;
 	}
 }
