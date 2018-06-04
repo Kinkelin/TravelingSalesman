@@ -1,7 +1,7 @@
+package mathematical;
+
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 public class BruteForceTsp implements TspAlgorithm {
 
@@ -12,11 +12,13 @@ public class BruteForceTsp implements TspAlgorithm {
 		double bestLength = Double.MAX_VALUE;
 		while (iter.hasNext()) {
 			List<Node> route = iter.next();
-			route.add(route.get(0));
-			double length = Node.routeLength(route);
-			if (length < bestLength) {
-				bestLength = length;
-				bestRoute = route;
+			if (route.get(0) == nodes[0]) {
+				route.add(route.get(0));
+				double length = Node.routeLength(route);
+				if (length < bestLength) {
+					bestLength = length;
+					bestRoute = route;
+				}
 			}
 		}
 		return bestRoute.toArray(new Node[bestRoute.size()]);

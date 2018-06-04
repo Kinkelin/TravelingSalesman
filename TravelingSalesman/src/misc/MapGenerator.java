@@ -1,3 +1,4 @@
+package misc;
 import java.awt.Point;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -5,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import mathematical.Node;
+import visual.City;
 
 public class MapGenerator {
 

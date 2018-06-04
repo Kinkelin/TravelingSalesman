@@ -1,3 +1,4 @@
+package visual;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;

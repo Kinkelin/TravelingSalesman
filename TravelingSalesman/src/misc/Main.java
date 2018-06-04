@@ -1,8 +1,18 @@
+package misc;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
+
+import mathematical.BruteForceTsp;
+import mathematical.EasiestPathTsp;
+import mathematical.MonkeyTsp;
+import mathematical.TspAlgorithm;
+import visual.City;
+import visual.Display;
+import visual.Salesman;
+import visual.Simulation;
 
 public class Main {
 	public static void main(String[] args) {
@@ -21,9 +31,13 @@ public class Main {
 		TspAlgorithm monkey = new MonkeyTsp();
 		List<City> randomRoute = generator.getCities(monkey.solve(generator.getNodes()));
 		
-		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, -2));
-		salesmen.add(new Salesman(randomRoute, Color.CYAN, "Monkey", display, 2));
+		TspAlgorithm easiestPath = new EasiestPathTsp();
+		List<City> easiestRoute = generator.getCities(easiestPath.solve(generator.getNodes()));
 		
+		salesmen.add(new Salesman(randomRoute, Color.RED, "Monkey", display, -5));
+		salesmen.add(new Salesman(easiestRoute, Color.YELLOW, "Easiest Path", display, 0));
+		
+		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 5));
 		
 		display.setSalesmen(salesmen);
 		

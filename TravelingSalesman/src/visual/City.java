@@ -1,5 +1,8 @@
+package visual;
 import java.awt.Color;
 import java.awt.Point;
+
+import mathematical.Node;
 
 public class City extends Circle {
 	
