@@ -10,9 +10,11 @@ public class BruteForceTsp implements TspAlgorithm, TspStepByStep {
 	private List<Node> bestRoute;
 	private double length = Double.MAX_VALUE;
 	private boolean stepResult = true;
+	private Node[] testedRoute;
 	
 	private boolean step(PermutationIterator<Node> iter, Node[] nodes) {
 		List<Node> route = iter.next();
+		testedRoute = route.toArray(new Node[route.size()]);
 		if (route.get(0) == nodes[0]) {
 			double length = Node.routeLength(route);
 			if (length < this.length) {
@@ -50,8 +52,8 @@ public class BruteForceTsp implements TspAlgorithm, TspStepByStep {
 	}
 
 	@Override
-	public Node[] next() {
+	public List<Node[]> next() {
 		stepResult = step(iter, nodes);
-		return bestRoute.toArray(new Node[bestRoute.size()]);
+		return new RouteList(bestRoute.toArray(new Node[bestRoute.size()]), testedRoute);
 	}
 }

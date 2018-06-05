@@ -1,10 +1,13 @@
 package animation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import mathematical.Node;
 import mathematical.TspStepByStep;
 import misc.MapGenerator;
+import visual.City;
 import visual.SolvingDisplay;
 
 public class SolvingAnimation extends Animation {
@@ -23,11 +26,13 @@ public class SolvingAnimation extends Animation {
 
 	@Override
 	protected void animationStep() {
-		Node[] route = algorithm.next();
-		solvingDisplay.setRoute(generator.getCities(route));
-		solvingDisplay.setLength(Math.round(Node.routeLength(Arrays.asList(route))));
+		List<Node[]> routes = algorithm.next();
+		solvingDisplay.setRoute(generator.getCities(routes.get(0)));
+		if (routes.size() == 2) solvingDisplay.setTestedRoute(generator.getCities(routes.get(1)));
+		solvingDisplay.setLength(Math.round(Node.routeLength(Arrays.asList(routes.get(0)))));
 		stepCount += 1;
 		solvingDisplay.setSteps(stepCount);
 		running = algorithm.hasNext();
+		if (!running) solvingDisplay.setTestedRoute(new ArrayList<City>());
 	}
 }

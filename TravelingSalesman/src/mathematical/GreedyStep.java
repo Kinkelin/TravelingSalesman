@@ -1,5 +1,7 @@
 package mathematical;
 
+import java.util.List;
+
 public class GreedyStep extends GreedyTsp implements TspStepByStep{
 
 	@Override
@@ -17,13 +19,14 @@ public class GreedyStep extends GreedyTsp implements TspStepByStep{
 	}
 
 	@Override
-	public Node[] next() {
+	public List<Node[]> next() {
 		if (!hasNext()) {
 			return null;
 		}
 		step(nodes, progress, route);
 		progress += 1;
-		return route;
+		
+		return new RouteList(route);
 	}
 
 }

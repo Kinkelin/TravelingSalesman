@@ -28,6 +28,7 @@ public class Node {
 		for (int i = 0; i < route.size() - 1; i++) {
 			length += route.get(i).getWeight(route.get(i+1));
 		}
+		length += route.get(route.size()-1).getWeight(route.get(0));
 		return length;
 	}
 }

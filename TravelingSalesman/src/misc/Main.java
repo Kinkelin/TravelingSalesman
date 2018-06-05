@@ -28,17 +28,15 @@ public class Main extends JFrame {
 	private MapGenerator generator;
 
 	public Main() {
-		generator = new MapGenerator(100);
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 1000);
 		setVisible(true);
-
 		 initializeSolving();
-		//initializeTravelling();
+//		initializeTravelling();
 	}
 
 	private void initializeSolving() {
+		generator = new MapGenerator(50);
 		SolvingDisplay display = new SolvingDisplay(generator.getCities());
 
 		TspStepByStep bruteForce = new BruteForceTsp();
@@ -47,38 +45,33 @@ public class Main extends JFrame {
 		TspStepByStep greedy = new GreedyStep();
 		greedy.setUp(generator.getNodes());
 
-		TspStepByStep kopt = new KOptTsp(10);
+		TspStepByStep kopt = new KOptTsp(5);
 		kopt.setUp(generator.getNodes());
 
 		add(display);
-		new SolvingAnimation(display, 600, generator, kopt).run();
+		new SolvingAnimation(display, 15, generator, kopt).run();
 	}
 
 	private void initializeTravelling() {
+		generator = new MapGenerator(10);
 		TravelDisplay display = new TravelDisplay();
 		display.setCities(generator.getCities());
-
-		BruteForceTsp bruteForce = new BruteForceTsp();
-		 List<City> bestRoute = generator.getCities(bruteForce.solve(generator.getNodes()));
-
-		TspAlgorithm monkey = new MonkeyTsp();
-		List<City> randomRoute = generator.getCities(monkey.solve(generator.getNodes()));
-
-		TspAlgorithm greedy = new GreedyAlgorithm();
-		List<City> greedyRoute = generator.getCities(greedy.solve(generator.getNodes()));
-
-		TspAlgorithm kopt = new KOptTsp(100);
-		List<City> koptRoute = generator.getCities(kopt.solve(generator.getNodes()));
-
 		List<Salesman> salesmen = new LinkedList<>();
-		salesmen.add(new Salesman(randomRoute, Color.RED, "Monkey", display, -9));
-		salesmen.add(new Salesman(greedyRoute, Color.BLUE, "Greedy", display, -3));
-		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 3));
-		salesmen.add(new Salesman(koptRoute, Color.MAGENTA, "K-Opt", display, 9));
-		display.setSalesmen(salesmen);
 
+		
+		//List<City> randomRoute = generator.getCities(new MonkeyTsp().solve(generator.getNodes()));
+		List<City> greedyRoute = generator.getCities(new GreedyAlgorithm().solve(generator.getNodes()));
+		List<City> bestRoute = generator.getCities(new BruteForceTsp().solve(generator.getNodes()));
+		List<City> kopt5Route = generator.getCities(new KOptTsp(5).solve(generator.getNodes()));
+	
+		//salesmen.add(new Salesman(randomRoute, Color.BLACK, "Monkey", display, -9));
+		salesmen.add(new Salesman(greedyRoute, Color.RED, "Greedy", display, -3));
+		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 3));
+		salesmen.add(new Salesman(kopt5Route, Color.BLUE, "K-Opt 5", display, -9));
+		
+		display.setSalesmen(salesmen);
 		add(display);
-		new TravelAnimation(display, 60, 2.0).run();
+		new TravelAnimation(display, 60, 6).run();
 	}
 
 }

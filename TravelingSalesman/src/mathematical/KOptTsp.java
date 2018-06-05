@@ -1,15 +1,17 @@
 package mathematical;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class KOptTsp implements TspStepByStep, TspAlgorithm {
 	
 	private Node[] route;
-	double routeLength;
-	int i;
-	int j;
-	int k;
-	int iterations;
+	private double routeLength;
+	private int i;
+	private int j;
+	private int k;
+	private int iterations;
+	private Node[] testedRoute;
 	
 	public KOptTsp(int iterations) {
 		this.iterations = iterations;
@@ -31,7 +33,7 @@ public class KOptTsp implements TspStepByStep, TspAlgorithm {
 	}
 
 	@Override
-	public Node[] next() {
+	public List<Node[]> next() {
 		step(i, j, k);
 		k+=1;
 		if (k >= route.length - 1) {
@@ -42,13 +44,14 @@ public class KOptTsp implements TspStepByStep, TspAlgorithm {
 				i+=1;
 			}
 		}
-		return route;
+		return new RouteList(route, testedRoute);
 	}
 
 	private void step(int i, int j, int k) {
 		Node[] newRoute = new Node[route.length];
 		swap(newRoute);
 		double newRouteLength = Node.routeLength(Arrays.asList(newRoute));
+		testedRoute = newRoute;
 		if (newRouteLength < routeLength) {
 			route = newRoute;
 			routeLength = newRouteLength;
@@ -59,11 +62,10 @@ public class KOptTsp implements TspStepByStep, TspAlgorithm {
 	@Override
 	public Node[] solve(Node[] nodes) {
 		route = new MonkeyTsp().solve(nodes);
-
-		for (int i = 0; i < iterations; i++) {
-			routeLength = Node.routeLength(Arrays.asList(route));
-			for (int j = 1; j < route.length - 1; j++) {
-				for (int k = j + 1; k < route.length - 1; k++) {
+		routeLength = Double.MAX_VALUE;
+		for (i = 0; i < iterations; i++) {
+			for (j = 1; j < route.length - 1; j++) {
+				for (k = j + 1; k < route.length - 1; k++) {
 					step(i, j, k);
 				}
 			}

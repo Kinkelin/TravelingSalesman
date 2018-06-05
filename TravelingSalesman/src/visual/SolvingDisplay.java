@@ -1,5 +1,6 @@
 package visual;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class SolvingDisplay extends JPanel {
 
 	private List<City> cities;
 	private List<City> route = new ArrayList<>();
+	private List<City> testedRoute = new ArrayList<>();
 	private JLabel label = new JLabel();
 
 	private int steps;
@@ -43,10 +45,8 @@ public class SolvingDisplay extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		for (int i = 0; i < route.size() - 1; i++) {
-			drawLine(g, route.get(i), route.get(i + 1));
-		}
-		drawLine(g, route.get(route.size() - 1), route.get(0));
+		drawRoute(g, testedRoute, Color.RED);
+		drawRoute(g, route, Color.BLACK);
 		cities.forEach(c -> c.draw(g));
 	}
 
@@ -56,5 +56,19 @@ public class SolvingDisplay extends JPanel {
 			Point p2 = c2.getPosition();
 			g.drawLine(p1.x, p1.y, p2.x, p2.y);
 		}
+	}
+	
+	private void drawRoute(Graphics g, List<City> route, Color c) {
+		if (route.size() > 1) {
+		g.setColor(c);
+		for (int i = 0; i < route.size() - 1; i++) {
+			drawLine(g, route.get(i), route.get(i + 1));
+		}
+		drawLine(g, route.get(route.size() - 1), route.get(0));
+		}
+	}
+
+	public void setTestedRoute(List<City> testedRoute) {
+		this.testedRoute = testedRoute;
 	}
 }
