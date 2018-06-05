@@ -2,7 +2,7 @@ package mathematical;
 
 import java.util.List;
 
-public class GreedyStep extends GreedyTsp implements TspStepByStep{
+public class GreedyStep extends GreedyAlgorithm implements TspStep{
 
 	@Override
 	public void setUp(Node[] nodes) {

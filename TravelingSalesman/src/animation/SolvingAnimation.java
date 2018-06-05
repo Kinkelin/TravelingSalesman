@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mathematical.Node;
-import mathematical.TspStepByStep;
+import mathematical.TspStep;
 import misc.MapGenerator;
 import visual.City;
 import visual.SolvingDisplay;
@@ -14,10 +14,10 @@ public class SolvingAnimation extends Animation {
 
 	private SolvingDisplay solvingDisplay;
 	private MapGenerator generator;
-	private TspStepByStep algorithm;
+	private TspStep algorithm;
 	private int stepCount = 0;
 	
-	public SolvingAnimation(SolvingDisplay display, double desiredFps, MapGenerator generator, TspStepByStep algorithm) {
+	public SolvingAnimation(SolvingDisplay display, double desiredFps, MapGenerator generator, TspStep algorithm) {
 		super(display, desiredFps);
 		solvingDisplay = display;
 		this.generator = generator;

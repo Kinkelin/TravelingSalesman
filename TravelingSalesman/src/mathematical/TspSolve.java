@@ -1,5 +1,5 @@
 package mathematical;
 
-public interface TspAlgorithm {
+public interface TspSolve {
 	public Node[] solve(Node[] nodes);
 }

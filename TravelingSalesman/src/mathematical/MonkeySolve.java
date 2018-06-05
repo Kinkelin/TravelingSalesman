@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MonkeyTsp implements TspAlgorithm {
+public class MonkeySolve implements TspSolve {
 
 	@Override
 	public Node[] solve(Node[] nodes) {
