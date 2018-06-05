@@ -9,10 +9,10 @@ public class Salesman extends Circle {
 	private int routePosition = 0;
 	private double currentDistance = 0;
 	private Trail currentTrail;
-	private Display display;
+	private TravelDisplay display;
 	private int offset;
 	
-	public Salesman(List<City> route, Color color, String name, Display display, int offset) {
+	public Salesman(List<City> route, Color color, String name, TravelDisplay display, int offset) {
 		this.offset = offset;
 		this.route = route;
 		radius = 9;

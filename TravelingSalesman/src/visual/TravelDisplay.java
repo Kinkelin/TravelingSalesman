@@ -1,5 +1,5 @@
 package visual;
-import java.awt.Color;
+
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Display extends JPanel {
+public class TravelDisplay extends JPanel {
 
 	private List<City> cities = new LinkedList<>();
 	private List<Trail> trails = new LinkedList<>();
@@ -20,7 +20,7 @@ public class Display extends JPanel {
 	private JLabel fps = new JLabel();
 	private JLabel distanceTravelled = new JLabel();
 	
-	public Display() {
+	public TravelDisplay() {
 		add(fps);
 		add(distanceTravelled);
 	}

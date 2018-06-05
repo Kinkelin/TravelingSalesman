@@ -8,16 +8,15 @@ public class MonkeyTsp implements TspAlgorithm {
 
 	@Override
 	public Node[] solve(Node[] nodes) {
-		Node[] solved = new Node[nodes.length + 1];
-		List<Node> nodelist = new ArrayList(Arrays.asList(nodes));
+		Node[] route = new Node[nodes.length];
+		List<Node> nodelist = new ArrayList<Node>(Arrays.asList(nodes));
 		nodelist.remove(0);
 		Collections.shuffle(nodelist);
-		solved[0] = nodes[0];
+		route[0] = nodes[0];
 		for (int i=0; i<nodelist.size(); i++) {
-			solved[i+1] = nodelist.get(i);
+			route[i+1] = nodelist.get(i);
 		}
-		solved[nodes.length] = solved[0];
-		return solved;
+		return route;
 	}
 
 }

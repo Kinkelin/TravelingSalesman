@@ -1,29 +1,27 @@
-package visual;
-import java.util.List;
+package animation;
 
-public class Simulation implements Runnable {
-	public static long THREAD_SLEEP = 1;
-	public static double DESIRED_FPS = 60;
-	public static double STEP_MOVEMENT = 9;
+import javax.swing.JPanel;
 
-	private Display display;
+public abstract class Animation implements Runnable {
+	protected static final long THREAD_SLEEP = 1;
+	
+	protected double desiredFps;
+	protected JPanel display;
+	protected boolean running = false;
 
-	private boolean running = false;
+	public Animation(JPanel display, double desiredFps) {
+		this(display);
+		this.desiredFps = desiredFps;
+	}
 
-	public Simulation(Display display) {
+	public Animation(JPanel display) {
 		this.display = display;
+		desiredFps = 60;
 	}
+	
+	protected int fps;
 
-	private int fps;
-
-	private void simulationStep() {
-		List<Salesman> salesmen = display.getSalesmen();
-		boolean salesmanBusy = false;
-		for (Salesman salesman : salesmen) {
-			salesmanBusy = salesman.move(STEP_MOVEMENT) ? true : salesmanBusy;
-		}
-		running = salesmanBusy;
-	}
+	protected abstract void animationStep();
 
 	@Override
 	public void run() {
@@ -38,9 +36,8 @@ public class Simulation implements Runnable {
 		while (running) {
 			currentTime = System.currentTimeMillis();
 
-			if (currentTime - lastFrameTime >= Math.floor(1000 / DESIRED_FPS)) {
-
-				simulationStep();
+			if (currentTime - lastFrameTime >= Math.floor(1000 / desiredFps)) {
+				animationStep();
 				display.repaint();
 				display.revalidate();
 
@@ -50,7 +47,6 @@ public class Simulation implements Runnable {
 
 			if ((currentTime - lastSecond) > 1000) {
 				fps = framesInCurrentSecond;
-				display.setFps(fps);
 				framesInCurrentSecond = 0;
 				lastSecond = currentTime;
 			}
