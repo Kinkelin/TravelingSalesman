@@ -8,7 +8,7 @@ public class KoptSolve extends KoptAlgorithm implements TspSolve {
 
 	@Override
 	public Node[] solve(Node[] nodes) {
-		route = new MonkeySolve().solve(nodes);
+		route = nodes;
 		routeLength = Double.MAX_VALUE;
 		for (i = 0; i < iterations; i++) {
 			for (j = 1; j < route.length - 1; j++) {

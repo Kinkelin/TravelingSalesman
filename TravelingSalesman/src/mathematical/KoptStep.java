@@ -10,7 +10,7 @@ public class KoptStep extends KoptAlgorithm implements TspStep {
 
 	@Override
 	public void setUp(Node[] nodes) {
-		route = new MonkeySolve().solve(nodes);
+		route = nodes;
 		routeLength = Double.MAX_VALUE;
 		i = 0;
 		j = 1;

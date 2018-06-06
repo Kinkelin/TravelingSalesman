@@ -33,7 +33,7 @@ public class Main extends JFrame {
 		setSize(1000, 1000);
 		setVisible(true);
 		 initializeSolving();
-//		initializeTravelling();
+	//initializeTravelling();
 	}
 
 	private void initializeSolving() {
@@ -46,11 +46,14 @@ public class Main extends JFrame {
 		TspStep greedy = new GreedyStep();
 		greedy.setUp(generator.getNodes());
 
-		TspStep kopt = new KoptStep(5);
-		kopt.setUp(generator.getNodes());
+		TspStep koptFromGreedy = new KoptStep(5);
+		koptFromGreedy.setUp(new GreedySolve().solve(generator.getNodes()));
+		
+		TspStep koptFromRandom = new KoptStep(5);
+		koptFromRandom.setUp(new MonkeySolve().solve(generator.getNodes()));
 
 		add(display);
-		new SolvingAnimation(display, 15, generator, kopt).run();
+		new SolvingAnimation(display, 120, generator, koptFromRandom).run();
 	}
 
 	private void initializeTravelling() {
@@ -64,11 +67,14 @@ public class Main extends JFrame {
 		List<City> greedyRoute = generator.getCities(new GreedySolve().solve(generator.getNodes()));
 		List<City> bestRoute = generator.getCities(new BruteForceSolve().solve(generator.getNodes()));
 		List<City> kopt5Route = generator.getCities(new KoptSolve(5).solve(generator.getNodes()));
+		List<City> kopt5FromGreedyRoute = generator.getCities(new KoptSolve(5).solve(new GreedySolve().solve(generator.getNodes())));
 	
-		salesmen.add(new Salesman(randomRoute, Color.BLACK, "Monkey", display, -9));
+		//salesmen.add(new Salesman(randomRoute, Color.BLACK, "Monkey", display, -9));
+		
 		salesmen.add(new Salesman(greedyRoute, Color.RED, "Greedy", display, -3));
-		salesmen.add(new Salesman(bestRoute, Color.GREEN, "Brute Force", display, 3));
+		salesmen.add(new Salesman(bestRoute, Color.BLACK, "Brute Force", display, 9));
 		salesmen.add(new Salesman(kopt5Route, Color.BLUE, "K-Opt 5", display, -9));
+		salesmen.add(new Salesman(kopt5FromGreedyRoute, Color.GREEN, "K-Opt 5 (Greedy)", display, 3));
 		
 		display.setSalesmen(salesmen);
 		add(display);
