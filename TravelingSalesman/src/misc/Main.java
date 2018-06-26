@@ -1,6 +1,8 @@
 package misc;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.swing.JFrame;
 
 import animation.SolvingAnimation;
 import animation.TravelAnimation;
+import mathematical.BruteForceAlgorithm;
 import mathematical.BruteForceSolve;
 import mathematical.BruteForceStep;
 import mathematical.GreedySolve;
@@ -15,6 +18,8 @@ import mathematical.GreedyStep;
 import mathematical.KoptSolve;
 import mathematical.KoptStep;
 import mathematical.MonkeySolve;
+import mathematical.Node;
+import mathematical.TspSolve;
 import mathematical.TspStep;
 import visual.City;
 import visual.TravelDisplay;
@@ -29,11 +34,12 @@ public class Main extends JFrame {
 	private MapGenerator generator;
 
 	public Main() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1000, 1000);
-		setVisible(true);
-		 initializeSolving();
-	//initializeTravelling();
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setSize(1000, 1000);
+		//setVisible(true);
+		//initializeSolving();
+		//initializeTravelling();
+		genereateCSVData();
 	}
 
 	private void initializeSolving() {
@@ -79,6 +85,28 @@ public class Main extends JFrame {
 		display.setSalesmen(salesmen);
 		add(display);
 		new TravelAnimation(display, 60, 6).run();
+	}
+	
+	private void genereateCSVData() {
+		// @Finn solltest den Pfad anpassen wenn du bei dir ausführst
+		CSVFile file = new CSVFile("C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanData.csv");
+		
+		file.writeLine(new String[] {"nodes", "optimum (bruteForce)", "greedy", "KOpt5", "KOpt50" });
+		TspSolve[] algorithms = new TspSolve[] {new BruteForceSolve(), new GreedySolve(), new KoptSolve(5), new KoptSolve(50)};
+		
+		for(int i = 5; i < 12; i++) {
+			generator = new MapGenerator(i);
+			String[] iterationResult = new String[algorithms.length + 1];
+			iterationResult[0] = Integer.toString(i);
+			
+			// algoritmen mit problemgroeße i durchgehen durchgehen
+			for(int j = 0; j < algorithms.length; j++) {
+				iterationResult[j + 1] = Double.toString(Math.floor(Node.routeLength(Arrays.asList(algorithms[j].solve(generator.getNodes())))));
+			}
+			
+			file.writeLine(iterationResult);
+		}
+		file.save();
 	}
 
 }
