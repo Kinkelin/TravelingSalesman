@@ -12,7 +12,7 @@ import visual.City;
 
 public class MapGenerator {
 
-	private static int MAP_SIZE = 935;
+	private static int MAP_SIZE = 735;
 
 	private City[] cities;
 	private Node[] nodes;

@@ -2,7 +2,7 @@ package animation;
 
 import javax.swing.JPanel;
 
-public abstract class Animation implements Runnable {
+public abstract class Animation extends Thread {
 	protected static final long THREAD_SLEEP = 1;
 	
 	protected double desiredFps;
