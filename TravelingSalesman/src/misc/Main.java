@@ -1,12 +1,18 @@
 package misc;
 
 import java.awt.Color;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import animation.SolvingAnimation;
 import animation.TravelAnimation;
@@ -30,20 +36,56 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		new Main();
 	}
+	
+	private JFrame guiJFrame; 
 
 	private MapGenerator generator;
 
 	public Main() {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setSize(1000, 1000);
-		//setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1000, 1000);
+		InitGui();
+		setVisible(true);
 		//initializeSolving();
 		//initializeTravelling();
-		genereateCSVData();
+		//genereateCSVData();
 	}
-
+	
+	private void InitGui() {
+		JPanel guiPanel = new JPanel(); 
+		JButton travelingButton = new JButton("Traveling Animation");
+		JButton solvingButton = new JButton("Solving Animation");
+		
+		travelingButton.addActionListener(new ActionListener()
+		{
+			  public void actionPerformed(ActionEvent e)
+			  { 
+				  remove(guiPanel);
+				  revalidate();
+				  repaint();
+				  //initializeTravelling();
+			  } 
+		});
+		
+		solvingButton.addActionListener(new ActionListener()
+		{
+			  public void actionPerformed(ActionEvent e)
+			  {
+				  remove(guiPanel);
+				  revalidate();
+				  repaint();
+				  initializeSolving();
+			  } 
+		});
+		
+		guiPanel.add(travelingButton);
+		guiPanel.add(solvingButton);
+		
+		add(guiPanel);
+	}
+	
 	private void initializeSolving() {
-		generator = new MapGenerator(50);
+		generator = new MapGenerator(100);
 		SolvingDisplay display = new SolvingDisplay(generator.getCities());
 
 		TspStep bruteForce = new BruteForceStep();
@@ -59,7 +101,7 @@ public class Main extends JFrame {
 		koptFromRandom.setUp(new MonkeySolve().solve(generator.getNodes()));
 
 		add(display);
-		new SolvingAnimation(display, 120, generator, koptFromRandom).run();
+		new SolvingAnimation(display, 60, generator, koptFromRandom).run();
 	}
 
 	private void initializeTravelling() {
@@ -67,7 +109,6 @@ public class Main extends JFrame {
 		TravelDisplay display = new TravelDisplay();
 		display.setCities(generator.getCities());
 		List<Salesman> salesmen = new LinkedList<>();
-
 		
 		List<City> randomRoute = generator.getCities(new MonkeySolve().solve(generator.getNodes()));
 		List<City> greedyRoute = generator.getCities(new GreedySolve().solve(generator.getNodes()));
@@ -89,13 +130,16 @@ public class Main extends JFrame {
 	
 	private void genereateCSVData() {
 		// @Finn solltest den Pfad anpassen wenn du bei dir ausführst
-		CSVFile file = new CSVFile("C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanData.csv");
+		CSVFile file = new CSVFile("C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanDataWOBruteForce.csv");
 		
-		file.writeLine(new String[] {"nodes", "optimum (bruteForce)", "greedy", "KOpt5", "KOpt50" });
-		TspSolve[] algorithms = new TspSolve[] {new BruteForceSolve(), new GreedySolve(), new KoptSolve(5), new KoptSolve(50)};
+		file.writeLine(new String[] {"nodes",/* "optimum (bruteForce)",*/ "greedy", "KOpt5", "KOpt50" });
+		TspSolve[] algorithms = new TspSolve[] {/*new BruteForceSolve(),*/ new GreedySolve(), new KoptSolve(5), new KoptSolve(50)};
 		
-		for(int i = 5; i < 12; i++) {
-			generator = new MapGenerator(i);
+		//file.writeLine(new String[] {"nodes", "optimum (bruteForce)", "KOpt5", });
+		//TspSolve[] algorithms = new TspSolve[] {new BruteForceSolve(), new KoptSolve(5)};
+		
+		for(int i = 5; i < 151; i++) {
+			generator = new MapGenerator(10);
 			String[] iterationResult = new String[algorithms.length + 1];
 			iterationResult[0] = Integer.toString(i);
 			
