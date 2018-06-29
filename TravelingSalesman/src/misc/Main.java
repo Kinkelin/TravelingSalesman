@@ -8,8 +8,10 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import animation.SolvingAnimation;
 import animation.TravelAnimation;
@@ -36,6 +38,8 @@ public class Main extends JFrame {
 
 	private MapGenerator generator;
 	private JPanel displayContainer;
+	private int problemSize = 10;
+	private int selectedAlgo = 0;
 
 	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,9 +56,17 @@ public class Main extends JFrame {
 
 		JButton solvingButton = new JButton("Solving Animation");
 		solvingButton.addActionListener(a -> initializeSolving());
+		
+		JTextField problemSizeField = new JTextField("", 4);
+		problemSizeField.addActionListener( a -> problemSize = Integer.parseInt(problemSizeField.getText()));
+		
+		JComboBox selectedAlgoBox = new JComboBox<String>(new String [] {"Brute Force", "Greedy", "KOpt Random", "KOpt Greedy"});
+		selectedAlgoBox.addActionListener(a -> selectedAlgo = selectedAlgoBox.getSelectedIndex());
 
+		guiPanel.add(problemSizeField);
 		guiPanel.add(travelingButton);
 		guiPanel.add(solvingButton);
+		guiPanel.add(selectedAlgoBox);
 
 		add(guiPanel);
 		displayContainer = new JPanel();
@@ -62,28 +74,37 @@ public class Main extends JFrame {
 	}
 
 	private void initializeSolving() {
-		generator = new MapGenerator(100);
+		generator = new MapGenerator(problemSize);
+		
+		TspStep[] algorithms = new TspStep[4];
+		
 		SolvingDisplay display = new SolvingDisplay(generator.getCities());
 		display.setPreferredSize(new Dimension(1000, 800));
+
 		TspStep bruteForce = new BruteForceStep();
 		bruteForce.setUp(generator.getNodes());
+		algorithms[0] = bruteForce;
 
 		TspStep greedy = new GreedyStep();
 		greedy.setUp(generator.getNodes());
-
-		TspStep koptFromGreedy = new KoptStep(5);
-		koptFromGreedy.setUp(new GreedySolve().solve(generator.getNodes()));
-
+		algorithms[1] = greedy;
+		
 		TspStep koptFromRandom = new KoptStep(5);
 		koptFromRandom.setUp(new MonkeySolve().solve(generator.getNodes()));
+		algorithms[2] = koptFromRandom;
+		
+		TspStep koptFromGreedy = new KoptStep(5);
+		koptFromGreedy.setUp(new GreedySolve().solve(generator.getNodes()));
+		algorithms[3] = koptFromGreedy;
+
 
 		displayContainer.removeAll();
 		displayContainer.add(display);
-		new SolvingAnimation(display, 60, generator, koptFromRandom).start();
+		new SolvingAnimation(display, 60, generator, algorithms[selectedAlgo]).start();
 	}
 
 	private void initializeTravelling() {
-		generator = new MapGenerator(10);
+		generator = new MapGenerator(problemSize);
 		TravelDisplay display = new TravelDisplay();
 		display.setPreferredSize(new Dimension(1000, 800));
 		display.setCities(generator.getCities());
