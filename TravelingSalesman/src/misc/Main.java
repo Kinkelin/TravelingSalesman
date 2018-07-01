@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,12 +45,16 @@ public class Main extends JFrame {
 	private int selectedAlgo = 0;
 	private ThreadMXBean bean = ManagementFactory.getThreadMXBean();
 
+	private long runtime;
+	private long routeLength;
+	private Node[] route;
+
 	public Main() {
+		//generateCSVData();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 1000);
 		initGui();
 		setVisible(true);
-		//genereateCSVData();
 	}
 
 	private void initGui() {
@@ -134,44 +139,57 @@ public class Main extends JFrame {
 		new TravelAnimation(display, 60, 6).start();
 	}
 
-	private void genereateCSVData() {
-		// @Finn solltest den Pfad anpassen wenn du bei dir ausführst
-		CSVFile file = new CSVFile(
-				"C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanLaufzeitTestKOptVsGreedy.csv");
+	private void generateCSVData() {
+		String path = "C:\\Users\\Finn Kuenkele\\data.csv";
+		System.out.println(path);
 
-		file.writeLine(new String[] { "nodes", "greedy", "KOpt5", "greedyKOpt" });
-		TspSolve[] algorithms = new TspSolve[] { new GreedySolve(), new KoptSolve(5) };
+		TspSolve random = new MonkeySolve();
+		TspSolve bruteForce = new BruteForceSolve();
+		TspSolve greedy = new GreedySolve();
+		TspSolve kopt = new KoptSolve(5);
 
-		for (int i = 10; i <= 200; i++) {
-			generator = new MapGenerator(i);
-			String[] iterationResult = new String[algorithms.length + 2];
-			iterationResult[0] = Integer.toString(i);
+		CSVFile file = new CSVFile(path);
+		file.writeLine(new String[] { "size", "Brute Force", "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)",
+				"Brute Force", "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)" });
 
-			// distanz
-			for (int j = 0; j < algorithms.length; j++) {
-				iterationResult[j + 1] = Double.toString(
-						Math.floor(Node.routeLength(Arrays.asList(algorithms[j].solve(generator.getNodes())))));
+		for (int i = 2; i <= 100; i++) {
+			String[] line = new String[11];
+			long[] cumulated = new long[10];
+			for (int j = 0; j < 1000; j++) {
+				generator = new MapGenerator(i);
+				Node[] nodes = generator.getNodes();
+
+				line[0] = Integer.toString(i);
+				if (i < 9) {
+					solve(bruteForce, nodes);
+					cumulated[0] += runtime;
+					cumulated[5] += routeLength;
+				}
+				solve(random, nodes);
+				long randomRuntime = runtime;
+				Node[] randomRoute = route;
+				cumulated[1] += runtime;
+				cumulated[6] += routeLength;
+
+				solve(greedy, nodes);
+				long greedyRuntime = runtime;
+				Node[] greedyRoute = route;
+				cumulated[2] += runtime;
+				cumulated[7] += routeLength;
+
+				solve(kopt, randomRoute);
+				cumulated[3] += randomRuntime + runtime;
+				cumulated[8] += routeLength;
+
+				solve(kopt, greedyRoute);
+				cumulated[4] += greedyRuntime + runtime;
+				cumulated[9] += routeLength;
 			}
-
-			// iterationResult[3] = Double.toString(
-			// Math.floor(Node.routeLength(Arrays.asList(new KoptSolve(5).solve(new
-			// GreedySolve().solve(generator.getNodes()))))));
-
-			// laufzeit
-			for (int j = 0; j < algorithms.length; j++) {
-				long t1 = getCpuTime();
-				algorithms[j].solve(generator.getNodes());
-				long t2 = getCpuTime();
-				iterationResult[j + 1] = Long.toString(t2 - t1);
+			for (int j = 0; j < 10; j++) {
+				line[j + 1] = Long.toString(cumulated[j] / 1000);
 			}
-			
-			long t1 = getCpuTime();
-			new KoptSolve(5).solve(new GreedySolve().solve(generator.getNodes()));
-			long t2 = getCpuTime();
-			
-			iterationResult[3] = Long.toString(t2 - t1);
-
-			file.writeLine(iterationResult);
+			file.writeLine(line);
+			System.out.println(i + "done");
 		}
 		file.save();
 	}
@@ -179,6 +197,15 @@ public class Main extends JFrame {
 	/** Get CPU time in nanoseconds. */
 	public long getCpuTime() {
 		return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
+	}
+
+	private void solve(TspSolve algo, Node[] nodes) {
+		long t1 = getCpuTime();
+		route = algo.solve(nodes);
+		long t2 = getCpuTime();
+
+		runtime = t2 - t1;
+		routeLength = (long) Math.floor(Node.routeLength(Arrays.asList(route)));
 	}
 
 }
