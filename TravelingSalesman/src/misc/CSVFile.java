@@ -18,7 +18,9 @@ public class CSVFile {
 		
 		try {
 			writer = new FileWriter(path);
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			System.out.println(e.getStackTrace());
+		}
 	}
 	
 	public void writeLine(String[] data) {

@@ -2,6 +2,8 @@ package misc;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,12 +42,14 @@ public class Main extends JFrame {
 	private JPanel displayContainer;
 	private int problemSize = 10;
 	private int selectedAlgo = 0;
+	private ThreadMXBean bean = ManagementFactory.getThreadMXBean();
 
 	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 1000);
 		initGui();
 		setVisible(true);
+		//genereateCSVData();
 	}
 
 	private void initGui() {
@@ -56,11 +60,12 @@ public class Main extends JFrame {
 
 		JButton solvingButton = new JButton("Solving Animation");
 		solvingButton.addActionListener(a -> initializeSolving());
-		
+
 		JTextField problemSizeField = new JTextField("", 4);
-		problemSizeField.addActionListener( a -> problemSize = Integer.parseInt(problemSizeField.getText()));
-		
-		JComboBox selectedAlgoBox = new JComboBox<String>(new String [] {"Brute Force", "Greedy", "KOpt Random", "KOpt Greedy"});
+		problemSizeField.addActionListener(a -> problemSize = Integer.parseInt(problemSizeField.getText()));
+
+		JComboBox selectedAlgoBox = new JComboBox<String>(
+				new String[] { "Brute Force", "Greedy", "KOpt Random", "KOpt Greedy" });
 		selectedAlgoBox.addActionListener(a -> selectedAlgo = selectedAlgoBox.getSelectedIndex());
 
 		guiPanel.add(problemSizeField);
@@ -75,9 +80,9 @@ public class Main extends JFrame {
 
 	private void initializeSolving() {
 		generator = new MapGenerator(problemSize);
-		
+
 		TspStep[] algorithms = new TspStep[4];
-		
+
 		SolvingDisplay display = new SolvingDisplay(generator.getCities());
 		display.setPreferredSize(new Dimension(1000, 800));
 
@@ -88,15 +93,14 @@ public class Main extends JFrame {
 		TspStep greedy = new GreedyStep();
 		greedy.setUp(generator.getNodes());
 		algorithms[1] = greedy;
-		
+
 		TspStep koptFromRandom = new KoptStep(5);
 		koptFromRandom.setUp(new MonkeySolve().solve(generator.getNodes()));
 		algorithms[2] = koptFromRandom;
-		
+
 		TspStep koptFromGreedy = new KoptStep(5);
 		koptFromGreedy.setUp(new GreedySolve().solve(generator.getNodes()));
 		algorithms[3] = koptFromGreedy;
-
 
 		displayContainer.removeAll();
 		displayContainer.add(display);
@@ -132,30 +136,49 @@ public class Main extends JFrame {
 
 	private void genereateCSVData() {
 		// @Finn solltest den Pfad anpassen wenn du bei dir ausführst
-		CSVFile file = new CSVFile("C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanDataWOBruteForce.csv");
+		CSVFile file = new CSVFile(
+				"C:\\Users\\jonah\\Documents\\Nordakademie\\travelingSalesmanLaufzeitTestKOptVsGreedy.csv");
 
-		file.writeLine(new String[] { "nodes", /* "optimum (bruteForce)", */ "greedy", "KOpt5", "KOpt50" });
-		TspSolve[] algorithms = new TspSolve[] { /* new BruteForceSolve(), */ new GreedySolve(), new KoptSolve(5),
-				new KoptSolve(50) };
+		file.writeLine(new String[] { "nodes", "greedy", "KOpt5", "greedyKOpt" });
+		TspSolve[] algorithms = new TspSolve[] { new GreedySolve(), new KoptSolve(5) };
 
-		// file.writeLine(new String[] {"nodes", "optimum (bruteForce)", "KOpt5", });
-		// TspSolve[] algorithms = new TspSolve[] {new BruteForceSolve(), new
-		// KoptSolve(5)};
-
-		for (int i = 5; i < 151; i++) {
-			generator = new MapGenerator(10);
-			String[] iterationResult = new String[algorithms.length + 1];
+		for (int i = 10; i <= 200; i++) {
+			generator = new MapGenerator(i);
+			String[] iterationResult = new String[algorithms.length + 2];
 			iterationResult[0] = Integer.toString(i);
 
-			// algoritmen mit problemgroeße i durchgehen durchgehen
+			// distanz
 			for (int j = 0; j < algorithms.length; j++) {
 				iterationResult[j + 1] = Double.toString(
 						Math.floor(Node.routeLength(Arrays.asList(algorithms[j].solve(generator.getNodes())))));
 			}
 
+			// iterationResult[3] = Double.toString(
+			// Math.floor(Node.routeLength(Arrays.asList(new KoptSolve(5).solve(new
+			// GreedySolve().solve(generator.getNodes()))))));
+
+			// laufzeit
+			for (int j = 0; j < algorithms.length; j++) {
+				long t1 = getCpuTime();
+				algorithms[j].solve(generator.getNodes());
+				long t2 = getCpuTime();
+				iterationResult[j + 1] = Long.toString(t2 - t1);
+			}
+			
+			long t1 = getCpuTime();
+			new KoptSolve(5).solve(new GreedySolve().solve(generator.getNodes()));
+			long t2 = getCpuTime();
+			
+			iterationResult[3] = Long.toString(t2 - t1);
+
 			file.writeLine(iterationResult);
 		}
 		file.save();
+	}
+
+	/** Get CPU time in nanoseconds. */
+	public long getCpuTime() {
+		return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
 	}
 
 }
