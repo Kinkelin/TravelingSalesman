@@ -50,7 +50,8 @@ public class Main extends JFrame {
 	private Node[] route;
 
 	public Main() {
-		//generateCSVData();
+		//generateCSVData2();
+		// generateCSVData();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 1000);
 		initGui();
@@ -139,6 +140,53 @@ public class Main extends JFrame {
 		new TravelAnimation(display, 60, 6).start();
 	}
 
+	private void generateCSVData2() {
+
+		String path = "C:\\Users\\Finn\\data_neu.csv";
+		System.out.println(path);
+
+		TspSolve random = new MonkeySolve();
+		TspSolve greedy = new GreedySolve();
+		TspSolve kopt = new KoptSolve(5);
+
+		CSVFile file = new CSVFile(path);
+		file.writeLine(new String[] { "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)" });
+
+		double[] randomWeights = new double[100];
+		double[] greedyWeights = new double[100];
+		double[] koptRandomWeights = new double[100];
+		double[] koptGreedyWeights = new double[100];
+
+		for (int k = 0; k < 1000; k++) {
+			System.out.println(k);
+			generator = new MapGenerator(100);
+			Node[] nodes = generator.getNodes();
+
+			solve(random, nodes);
+			Node[] randomRoute = route;
+
+			solve(greedy, nodes);
+			Node[] greedyRoute = route;
+			solve(kopt, randomRoute);
+			Node[] koptRandomRoute = route;
+			solve(kopt, greedyRoute);
+			Node[] koptGreedyRoute = route;
+			for (int i = 0; i < 100 - 1; i++) {
+				randomWeights[i] += Math.round(randomRoute[i].getWeight(randomRoute[i + 1]));
+				greedyWeights[i] += Math.round(greedyRoute[i].getWeight(greedyRoute[i + 1]));
+				koptRandomWeights[i] += Math.round(koptRandomRoute[i].getWeight(koptRandomRoute[i + 1]));
+				koptGreedyWeights[i] += Math.round(koptGreedyRoute[i].getWeight(koptGreedyRoute[i + 1]));
+			}
+		}
+
+		for (int i = 0; i < 100 - 1; i++) {
+			file.writeLine(new String[] { String.valueOf(randomWeights[i]), String.valueOf(greedyWeights[i]),
+					String.valueOf(koptRandomWeights[i]), String.valueOf(koptGreedyWeights[i]) });
+		}
+
+		file.save();
+	}
+
 	private void generateCSVData() {
 		String path = "C:\\Users\\Finn Kuenkele\\data.csv";
 		System.out.println(path);
@@ -150,7 +198,7 @@ public class Main extends JFrame {
 
 		CSVFile file = new CSVFile(path);
 		file.writeLine(new String[] { "size", "Brute Force", "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)",
-				"Brute Force", "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)" });
+				"Brute Force", "Random", "Greedy", "KOpt(Random)", "KOpt(Greedy)solve(kopt, greedyRoute);" });
 
 		for (int i = 2; i <= 100; i++) {
 			String[] line = new String[11];

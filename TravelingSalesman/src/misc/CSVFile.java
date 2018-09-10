@@ -19,7 +19,7 @@ public class CSVFile {
 		try {
 			writer = new FileWriter(path);
 		} catch (IOException e) {
-			System.out.println(e.getStackTrace());
+			System.out.println(e);
 		}
 	}
 	
